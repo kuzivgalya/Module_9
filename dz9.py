@@ -2,13 +2,16 @@ CONTACTS = {}
 
 
 def input_error(handler):
-    def wrapper():
+
+    def wrapper(*args, **kwargs):
         try:
-            handler()
+            handler(*args, **kwargs)
         except ValueError:
             print('Uncorrect number')
         except KeyError:
             print('No such contact')
+        except IndexError:
+            print('Enter more information')
     return wrapper
 
 
@@ -17,25 +20,28 @@ def start_session():
 
 
 @input_error
-def add_contact():
-    name = input("Enter name: ")
-    phone = int(input("Enter phone: "))
+def add_contact(command):
+    words = command.split()
+    name = words[1]
+    phone = words[2]
     CONTACTS[name] = phone
 
 
 @input_error
-def change_contact():
-    name = input('Enter contact name: ')
+def change_contact(command):
+    words = command.split()
+    name = words[1]
     if name in CONTACTS:
-        phone = int(input('Enter new phone: '))
+        phone = words[2]
         CONTACTS[name] = phone
     else:
         print('No such name in your contacts')
     
 
 @input_error
-def find_contact():
-    name = input('Enter contact name: ')
+def find_contact(command):
+    words = command.split()
+    name = words[1]
     print(name, CONTACTS[name])
 
 
@@ -48,23 +54,26 @@ def show_all_contacts():
 
 
 def main():
-    commands = {
-        'hello': start_session,
-        'add': add_contact,
-        'change': change_contact,
-        'phone': find_contact,
-        'show all': show_all_contacts,
-        'good bye': quit,
-        'close': quit,
-        'exit': quit
-    }
-
+    
     while True:
         user_command = input("Enter command: ")
-        if user_command not in commands:
-            print("Unknown command. Please try again.")
+        words = user_command.split()
+        if words[0] == 'hello':
+            start_session()
+        elif words[0] == 'add':
+            add_contact(user_command)
+        elif words[0] == 'change':
+            change_contact(user_command)
+        elif words[0] == 'phone':
+            find_contact(user_command)
+        elif words[0] == 'show':
+            show_all_contacts()
+        elif words[0] in ['good', 'close', 'exit']:
+            break
+        else:
+            print('Wrong command')
             continue
-        commands[user_command]()
+        
 
 
 if __name__ == '__main__':
