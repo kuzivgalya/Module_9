@@ -6,17 +6,18 @@ def input_error(handler):
         try:
             handler(*args, **kwargs)
         except ValueError:
-            print('Uncorrect number')
-            return ''
+            return 'Uncorrect number'
         except IndexError:
-            print('Give me name and phone please')
-            return ''
+            return 'Give me name and phone please'
         except KeyError:
-            print('No such contact')
-            return ''
+            return 'No such contac'
         else:
             return handler(*args, **kwargs)
     return wrapper
+
+
+def hello():
+    return 'How can I help you?'
 
 
 @input_error
@@ -50,9 +51,10 @@ def show_all_contacts():
     if CONTACTS == {}:
         return 'No contacts yet'
     else:
+        contacts_str = ''
         for key, value in CONTACTS.items():
-            print(key, value)
-        return ''
+            contacts_str += f'{key}  {value} \n'
+        return contacts_str
 
 
 def main():
@@ -62,7 +64,7 @@ def main():
         words = user_command.split()
         command = words[0].lower()
         if command == 'hello':
-            print('How can I help you?')
+            print(hello())
         elif command == 'add':
             print(add_contact(user_command))
         elif command == 'change':
